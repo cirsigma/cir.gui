@@ -1,118 +1,98 @@
-local function createGui()
-    -- Create main screen GUI
-    local gui = Instance.new("ScreenGui", game.CoreGui)
-    local mainFrame = Instance.new("Frame", gui)
-    mainFrame.Size = UDim2.new(0, 400, 0, 300)
-    mainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
-    mainFrame.BackgroundColor3 = Color3.new(1, 1, 1)
-    mainFrame.BackgroundTransparency = 0.5
-    mainFrame.Active = true -- Make the frame active to allow dragging
-    mainFrame.Draggable = true -- Enable dragging
+-- Create the ScreenGui
+local gui = Instance.new("ScreenGui", game.CoreGui)
+gui.ResetOnSpawn = false  -- Keep the GUI after respawn
 
-    -- Create title label for "Main"
-    local titleLabel = Instance.new("TextLabel", mainFrame)
-    titleLabel.Size = UDim2.new(1, 0, 0.2, 0)
-    titleLabel.Position = UDim2.new(0, 0, 0, 0)
-    titleLabel.Text = "cir.gui"
-    titleLabel.TextScaled = true
-    titleLabel.BackgroundTransparency = 1
+-- Create the Tab Container (Left Edge Tabs)
+local tabContainer = Instance.new("Frame", gui)
+tabContainer.Size = UDim2.new(0, 100, 1, 0)  -- 100px wide, full height
+tabContainer.Position = UDim2.new(0, 0, 0, 0)
+tabContainer.BackgroundColor3 = Color3.new(0.15, 0.15, 0.15)
+tabContainer.BorderSizePixel = 0
 
-    -- Create minimize button
-    local minimizeButton = Instance.new("TextButton", mainFrame)
-    minimizeButton.Size = UDim2.new(0.1, 0, 0.1, 0)
-    minimizeButton.Position = UDim2.new(0.9, 0, 0, 0)
-    minimizeButton.Text = "-"
-    minimizeButton.BackgroundColor3 = Color3.new(1, 0, 0) -- Solid red
-    minimizeButton.TextColor3 = Color3.new(1, 1, 1)
-
-    -- Create tab buttons
-    local mainTabButton = Instance.new("TextButton", mainFrame)
-    mainTabButton.Size = UDim2.new(0.2, 0, 0.1, 0)
-    mainTabButton.Position = UDim2.new(0, 0, 0.1, 0)
-    mainTabButton.Text = "Main"
-    mainTabButton.BackgroundColor3 = Color3.new(0, 0, 0)
-    mainTabButton.TextColor3 = Color3.new(1, 1, 1)
-
-    local genesisTabButton = Instance.new("TextButton", mainFrame)
-    genesisTabButton.Size = UDim2.new(0.2, 0, 0.1, 0)
-    genesisTabButton.Position = UDim2.new(0, 0, 0.2, 0)
-    genesisTabButton.Text = "Genesis FE"
-    genesisTabButton.BackgroundColor3 = Color3.new(0, 0, 0)
-    genesisTabButton.TextColor3 = Color3.new(1, 1, 1)
-
-    -- Genesis FE Tab GUI
-    local genesisFrame = Instance.new("Frame", mainFrame)
-    genesisFrame.Size = UDim2.new(1, 0, 0.8, 0)
-    genesisFrame.Position = UDim2.new(0, 0, 0.3, 0)
-    genesisFrame.BackgroundTransparency = 1 -- Invisible, just for layout
-    genesisFrame.Visible = false -- Start hidden
-
-    -- Create buttons for Genesis FE characters
-    local characters = {
-        {"Goner", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Goner"},
-        {"Sniper", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Sniper"},
-        {"Gale Fighter", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Gale%20Fighter"},
-        {"Krystal Dance", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Krystal%20Dance"},
-        {"AK47", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/AK-47"},
-        {"Linked Sword", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Linked%20Sword"},
-        {"Good Cop Bad Cop", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Good%20Cop%20Bad%20Cop"},
-        {"Neko", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Neko"},
-        {"Ban Hammer", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Ban%20Hammer"},
-        {"Puppet Master", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Puppet%20Master"},
-        {"Minigun", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Minigun"},
-        {"Sadist Genocider", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Sadist%20Genocider"},
-        {"Banisher", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Banisher"},
-        {"Karambit", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Karambit"},
-        {"Neptunian V", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Neptunian%20V"},
-        {"Motorcycle", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Motorcycle"},
-        {"Star Glitcher", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Star%20Glitcher"},
-    }
-
-    local previousButton = nil
-    for _, char in ipairs(characters) do
-        local button = Instance.new("TextButton", genesisFrame)
-        button.Size = UDim2.new(1, -20, 0, 30) -- Adjust size to fit within frame
-        button.Position = UDim2.new(0, 10, previousButton and (previousButton.Position.Y.Scale + 0.1) or 0, 0)
-        button.Text = char[1]
-        button.BackgroundColor3 = Color3.new(0, 0, 0)
-        button.TextColor3 = Color3.new(1, 1, 1)
-
-        button.MouseButton1Click:Connect(function()
-            loadstring(game:HttpGet(char[2]))()
-        end)
-
-        previousButton = button
-    end
-
-    -- Button functionality
-    mainTabButton.MouseButton1Click:Connect(function()
-        genesisFrame.Visible = false
-    end)
-
-    genesisTabButton.MouseButton1Click:Connect(function()
-        genesisFrame.Visible = true
-    end)
-
-    minimizeButton.MouseButton1Click:Connect(function()
-        if mainFrame.Size == UDim2.new(0, 400, 0, 300) then
-            mainFrame.Size = UDim2.new(0, 50, 0, 50)
-            mainFrame.Position = UDim2.new(0.5, -25, 0.5, -25)
-            minimizeButton.Visible = false
-            titleLabel.Visible = false
-            mainTabButton.Visible = false
-            genesisTabButton.Visible = false
-            genesisFrame.Visible = false -- Hide Genesis frame when minimized
-        else
-            mainFrame.Size = UDim2.new(0, 400, 0, 300)
-            mainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
-            minimizeButton.Visible = true
-            titleLabel.Visible = true
-            mainTabButton.Visible = true
-            genesisTabButton.Visible = true
+-- Function to switch tabs
+local function switchTab(content)
+    for _, child in pairs(gui:GetChildren()) do
+        if child:IsA("Frame") and child ~= tabContainer then
+            child.Visible = false
         end
-    end)
-
-    return gui
+    end
+    content.Visible = true
 end
 
-createGui()
+-- Create Main Tab Button
+local mainTab = Instance.new("TextButton", tabContainer)
+mainTab.Size = UDim2.new(1, 0, 0, 50)  -- Full width, 50px height
+mainTab.Text = "Main"
+mainTab.BackgroundColor3 = Color3.new(0.25, 0.25, 0.25)
+mainTab.TextColor3 = Color3.new(1, 1, 1)
+mainTab.MouseButton1Click:Connect(function()
+    switchTab(mainFrame)
+end)
+
+-- Create Genesis FE Tab Button
+local genesisTab = Instance.new("TextButton", tabContainer)
+genesisTab.Size = UDim2.new(1, 0, 0, 50)
+genesisTab.Position = UDim2.new(0, 0, 0, 50)
+genesisTab.Text = "Genesis FE"
+genesisTab.BackgroundColor3 = Color3.new(0.25, 0.25, 0.25)
+genesisTab.TextColor3 = Color3.new(1, 1, 1)
+genesisTab.MouseButton1Click:Connect(function()
+    switchTab(genesisFrame)
+end)
+
+-- Create Main Frame (Content for "Main" Tab)
+local mainFrame = Instance.new("Frame", gui)
+mainFrame.Size = UDim2.new(0, 300, 1, 0)  -- 300px wide, full height
+mainFrame.Position = UDim2.new(0, 100, 0, 0)  -- Positioned next to the tabs
+mainFrame.BackgroundColor3 = Color3.new(1, 1, 1)
+mainFrame.BackgroundTransparency = 0.1
+mainFrame.Visible = true  -- Default tab
+
+local mainLabel = Instance.new("TextLabel", mainFrame)
+mainLabel.Size = UDim2.new(1, 0, 1, 0)
+mainLabel.Text = "cir.gui"
+mainLabel.TextColor3 = Color3.new(0, 0, 0)
+mainLabel.BackgroundTransparency = 1
+
+-- Create Genesis FE Frame (Content for "Genesis FE" Tab)
+local genesisFrame = Instance.new("Frame", gui)
+genesisFrame.Size = UDim2.new(0, 300, 1, 0)
+genesisFrame.Position = UDim2.new(0, 100, 0, 0)
+genesisFrame.BackgroundColor3 = Color3.new(1, 1, 1)
+genesisFrame.BackgroundTransparency = 0.1
+genesisFrame.Visible = false
+
+-- List of Genesis FE Characters with Loadstrings
+local characters = {
+    {"Goner", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Goner"},
+    {"Sniper", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Sniper"},
+    {"Gale Fighter", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Gale%20Fighter"},
+    {"Krystal Dance", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Krystal%20Dance"},
+    {"AK47", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/AK-47"},
+    {"Linked Sword", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Linked%20Sword"},
+    {"Good Cop Bad Cop", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Good%20Cop%20Bad%20Cop"},
+    {"Neko", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Neko"},
+    {"Ban Hammer", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Ban%20Hammer"},
+    {"Puppet Master", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Puppet%20Master"},
+    {"Minigun", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Minigun"},
+    {"Sadist Genocider", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Sadist%20Genocider"},
+    {"Banisher", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Banisher"},
+    {"Karambit", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Karambit"},
+    {"Neptunian V", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Neptunian%20V"},
+    {"Motorcycle", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Motorcycle"},
+    {"Star Glitcher", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Star%20Glitcher"},
+}
+
+-- Generate Buttons for Genesis Characters
+for i, char in ipairs(characters) do
+    local button = Instance.new("TextButton", genesisFrame)
+    button.Size = UDim2.new(1, 0, 0, 50)
+    button.Position = UDim2.new(0, 0, 0, (i - 1) * 50)
+    button.Text = char[1]
+    button.TextColor3 = Color3.new(0, 0, 0)
+    button.BackgroundColor3 = Color3.new(0.8, 0.8, 0.8)
+
+    button.MouseButton1Click:Connect(function()
+        loadstring(game:HttpGet(char[2]))()
+    end)
+end
