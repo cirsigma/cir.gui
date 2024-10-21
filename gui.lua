@@ -1,98 +1,88 @@
 -- Create the ScreenGui
 local gui = Instance.new("ScreenGui", game.CoreGui)
-gui.ResetOnSpawn = false  -- Keep the GUI after respawn
+gui.ResetOnSpawn = false  -- Keeps the GUI open after respawn
 
--- Create the Tab Container (Left Edge Tabs)
-local tabContainer = Instance.new("Frame", gui)
-tabContainer.Size = UDim2.new(0, 100, 1, 0)  -- 100px wide, full height
-tabContainer.Position = UDim2.new(0, 0, 0, 0)
-tabContainer.BackgroundColor3 = Color3.new(0.15, 0.15, 0.15)
-tabContainer.BorderSizePixel = 0
-
--- Function to switch tabs
-local function switchTab(content)
-    for _, child in pairs(gui:GetChildren()) do
-        if child:IsA("Frame") and child ~= tabContainer then
-            child.Visible = false
-        end
-    end
-    content.Visible = true
-end
-
--- Create Main Tab Button
-local mainTab = Instance.new("TextButton", tabContainer)
-mainTab.Size = UDim2.new(1, 0, 0, 50)  -- Full width, 50px height
-mainTab.Text = "Main"
-mainTab.BackgroundColor3 = Color3.new(0.25, 0.25, 0.25)
-mainTab.TextColor3 = Color3.new(1, 1, 1)
-mainTab.MouseButton1Click:Connect(function()
-    switchTab(mainFrame)
-end)
-
--- Create Genesis FE Tab Button
-local genesisTab = Instance.new("TextButton", tabContainer)
-genesisTab.Size = UDim2.new(1, 0, 0, 50)
-genesisTab.Position = UDim2.new(0, 0, 0, 50)
-genesisTab.Text = "Genesis FE"
-genesisTab.BackgroundColor3 = Color3.new(0.25, 0.25, 0.25)
-genesisTab.TextColor3 = Color3.new(1, 1, 1)
-genesisTab.MouseButton1Click:Connect(function()
-    switchTab(genesisFrame)
-end)
-
--- Create Main Frame (Content for "Main" Tab)
+-- Create the Main Frame (the main GUI container)
 local mainFrame = Instance.new("Frame", gui)
-mainFrame.Size = UDim2.new(0, 300, 1, 0)  -- 300px wide, full height
-mainFrame.Position = UDim2.new(0, 100, 0, 0)  -- Positioned next to the tabs
-mainFrame.BackgroundColor3 = Color3.new(1, 1, 1)
+mainFrame.Size = UDim2.new(0, 400, 0, 300)  -- Adjusted size for better layout
+mainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)  -- Center on the screen
+mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)  -- Dark background
 mainFrame.BackgroundTransparency = 0.1
-mainFrame.Visible = true  -- Default tab
 
+-- Add a UI corner to the frame for rounded edges
+local uiCorner = Instance.new("UICorner", mainFrame)
+uiCorner.CornerRadius = UDim.new(0.1, 0)
+
+-- Create the Main Tab with instructions
 local mainLabel = Instance.new("TextLabel", mainFrame)
-mainLabel.Size = UDim2.new(1, 0, 1, 0)
-mainLabel.Text = "cir.gui"
-mainLabel.TextColor3 = Color3.new(0, 0, 0)
+mainLabel.Size = UDim2.new(1, 0, 0.2, 0)
+mainLabel.Position = UDim2.new(0, 0, 0, 0)
+mainLabel.Text = "CIR.GUI\nPress Left Ctrl to hide/show"
+mainLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+mainLabel.TextScaled = true
 mainLabel.BackgroundTransparency = 1
 
--- Create Genesis FE Frame (Content for "Genesis FE" Tab)
-local genesisFrame = Instance.new("Frame", gui)
-genesisFrame.Size = UDim2.new(0, 300, 1, 0)
-genesisFrame.Position = UDim2.new(0, 100, 0, 0)
-genesisFrame.BackgroundColor3 = Color3.new(1, 1, 1)
-genesisFrame.BackgroundTransparency = 0.1
-genesisFrame.Visible = false
+-- Create a Genesis FE Tab (Button Example)
+local genesisTab = Instance.new("Frame", mainFrame)
+genesisTab.Size = UDim2.new(1, 0, 0.8, 0)
+genesisTab.Position = UDim2.new(0, 0, 0.2, 0)
+genesisTab.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 
--- List of Genesis FE Characters with Loadstrings
-local characters = {
-    {"Goner", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Goner"},
-    {"Sniper", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Sniper"},
-    {"Gale Fighter", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Gale%20Fighter"},
-    {"Krystal Dance", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Krystal%20Dance"},
-    {"AK47", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/AK-47"},
-    {"Linked Sword", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Linked%20Sword"},
-    {"Good Cop Bad Cop", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Good%20Cop%20Bad%20Cop"},
-    {"Neko", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Neko"},
-    {"Ban Hammer", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Ban%20Hammer"},
-    {"Puppet Master", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Puppet%20Master"},
-    {"Minigun", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Minigun"},
-    {"Sadist Genocider", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Sadist%20Genocider"},
-    {"Banisher", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Banisher"},
-    {"Karambit", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Karambit"},
-    {"Neptunian V", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Neptunian%20V"},
-    {"Motorcycle", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Motorcycle"},
-    {"Star Glitcher", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Star%20Glitcher"},
-}
-
--- Generate Buttons for Genesis Characters
-for i, char in ipairs(characters) do
-    local button = Instance.new("TextButton", genesisFrame)
-    button.Size = UDim2.new(1, 0, 0, 50)
-    button.Position = UDim2.new(0, 0, 0, (i - 1) * 50)
-    button.Text = char[1]
-    button.TextColor3 = Color3.new(0, 0, 0)
-    button.BackgroundColor3 = Color3.new(0.8, 0.8, 0.8)
-
-    button.MouseButton1Click:Connect(function()
-        loadstring(game:HttpGet(char[2]))()
-    end)
+-- Add character buttons to the Genesis tab (adjusted layout)
+local function addGenesisButton(name, posY)
+    local button = Instance.new("TextButton", genesisTab)
+    button.Size = UDim2.new(0.9, 0, 0.1, 0)
+    button.Position = UDim2.new(0.05, 0, posY, 0)
+    button.Text = name
+    button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.TextScaled = true
 end
+
+-- Add Genesis FE character buttons (Example characters)
+addGenesisButton("Genesis Char 1", 0.05)
+addGenesisButton("Genesis Char 2", 0.2)
+addGenesisButton("Genesis Char 3", 0.35)
+addGenesisButton("Genesis Char 4", 0.5)
+addGenesisButton("Genesis Char 5", 0.65)
+
+-- Draggable functionality
+local dragging, dragInput, dragStart, startPos
+
+mainFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = mainFrame.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+mainFrame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        mainFrame.Position = UDim2.new(
+            startPos.X.Scale, startPos.X.Offset + delta.X,
+            startPos.Y.Scale, startPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+-- Toggle GUI visibility with Left Ctrl
+local UserInputService = game:GetService("UserInputService")
+UserInputService.InputBegan:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.LeftControl then
+        mainFrame.Visible = not mainFrame.Visible
+    end
+end)
