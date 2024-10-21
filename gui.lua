@@ -2,65 +2,95 @@
 local gui = Instance.new("ScreenGui", game.CoreGui)
 gui.ResetOnSpawn = false  -- Keeps the GUI open even after respawn
 
--- Create the main frame
+-- Create the main Frame
 local mainFrame = Instance.new("Frame", gui)
-mainFrame.Size = UDim2.new(0, 580, 0, 460)
-mainFrame.Position = UDim2.new(0.5, -290, 0.5, -230)
+mainFrame.Size = UDim2.new(0, 300, 0, 400)  -- Width: 300px, Height: 400px
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)  -- Centered on screen
 mainFrame.BackgroundColor3 = Color3.new(1, 1, 1)  -- White color
 mainFrame.BackgroundTransparency = 0.5  -- 50% transparent
-mainFrame.Active = true
-mainFrame.Draggable = true
 
--- Title
-local titleLabel = Instance.new("TextLabel", mainFrame)
-titleLabel.Size = UDim2.new(1, 0, 0, 50)
-titleLabel.Position = UDim2.new(0, 0, 0, 0)
-titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "CIR.GUI\nPress Ctrl to hide/show GUI"
-titleLabel.TextScaled = true
-titleLabel.TextColor3 = Color3.new(0, 0, 0)  -- Black color
-titleLabel.TextAlign = Enum.TextXAlignment.Center
+-- Enable dragging functionality
+local dragging, dragInput, dragStart, startPos
 
--- Create tabs
-local tabContainer = Instance.new("Frame", mainFrame)
-tabContainer.Size = UDim2.new(0, 160, 1, -50)
-tabContainer.Position = UDim2.new(0, 0, 0, 50)
-tabContainer.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+-- Function to start dragging
+mainFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = mainFrame.Position
 
-local pages = {}
-local function createTab(name)
-    local button = Instance.new("TextButton", tabContainer)
-    button.Size = UDim2.new(1, 0, 0, 50)
-    button.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
-    button.Text = name
-    button.TextColor3 = Color3.new(1, 1, 1)  -- White color
-    button.TextScaled = true
-    button.MouseButton1Click:Connect(function()
-        for _, page in pairs(pages) do
-            page.Visible = false
-        end
-        pages[name].Visible = true
-    end)
-    return button
-end
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
 
--- Create the main page
-local mainPage = Instance.new("Frame", mainFrame)
-mainPage.Size = UDim2.new(1, -160, 1, -50)
-mainPage.Position = UDim2.new(0, 160, 0, 50)
-mainPage.BackgroundColor3 = Color3.new(1, 1, 1)
-mainPage.Visible = true
-pages["Main"] = mainPage
+-- Function to update position while dragging
+mainFrame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
 
-createTab("Main")
+-- Update the mainFrame’s position as the player drags it
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        mainFrame.Position = UDim2.new(
+            startPos.X.Scale, startPos.X.Offset + delta.X,
+            startPos.Y.Scale, startPos.Y.Offset + delta.Y
+        )
+    end
+end)
 
--- Create the Genesis FE tab
-local genesisPage = Instance.new("Frame", mainFrame)
-genesisPage.Size = UDim2.new(1, -160, 1, -50)
-genesisPage.Position = UDim2.new(0, 160, 0, 50)
-genesisPage.BackgroundColor3 = Color3.new(1, 1, 1)
-genesisPage.Visible = false
-pages["Genesis FE"] = genesisPage
+-- Create the Tabs
+local tabFrame = Instance.new("Frame", mainFrame)
+tabFrame.Size = UDim2.new(0, 100, 1, 0)  -- Width: 100px, Full height
+tabFrame.Position = UDim2.new(0, 0, 0, 0)
+tabFrame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)  -- Dark gray color
+
+local mainTabButton = Instance.new("TextButton", tabFrame)
+mainTabButton.Size = UDim2.new(1, 0, 0, 50)  -- Full width, 50px height
+mainTabButton.Position = UDim2.new(0, 0, 0, 0)
+mainTabButton.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+mainTabButton.Text = "Main"
+mainTabButton.TextColor3 = Color3.new(1, 1, 1)
+
+local genesisTabButton = Instance.new("TextButton", tabFrame)
+genesisTabButton.Size = UDim2.new(1, 0, 0, 50)  -- Full width, 50px height
+genesisTabButton.Position = UDim2.new(0, 0, 0, 50)
+genesisTabButton.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+genesisTabButton.Text = "Genesis FE"
+genesisTabButton.TextColor3 = Color3.new(1, 1, 1)
+
+-- Create the Content Frame
+local contentFrame = Instance.new("Frame", mainFrame)
+contentFrame.Size = UDim2.new(1, -100, 1, 0)  -- Full width minus tab width
+contentFrame.Position = UDim2.new(0, 100, 0, 0)  -- Right of the tab
+contentFrame.BackgroundColor3 = Color3.new(1, 1, 1)  -- White background
+
+-- Main Tab UI
+local mainLabel = Instance.new("TextLabel", contentFrame)
+mainLabel.Size = UDim2.new(1, 0, 0, 50)
+mainLabel.Position = UDim2.new(0, 0, 0, 0)
+mainLabel.Text = "CIR.GUI"
+mainLabel.TextColor3 = Color3.new(0, 0, 0)
+mainLabel.BackgroundTransparency = 1  -- Transparent background
+
+local ctrlLabel = Instance.new("TextLabel", contentFrame)
+ctrlLabel.Size = UDim2.new(1, 0, 0, 50)
+ctrlLabel.Position = UDim2.new(0, 0, 0, 50)
+ctrlLabel.Text = "Press Ctrl to hide/show GUI"
+ctrlLabel.TextColor3 = Color3.new(0, 0, 0)
+ctrlLabel.BackgroundTransparency = 1  -- Transparent background
+
+-- Genesis FE Tab UI
+local genesisFrame = Instance.new("Frame", contentFrame)
+genesisFrame.Size = UDim2.new(1, 0, 1, 0)
+genesisFrame.Position = UDim2.new(0, 0, 0, 0)
+genesisFrame.BackgroundTransparency = 1  -- Transparent
 
 local characters = {
     {"Goner", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Goner"},
@@ -82,60 +112,42 @@ local characters = {
     {"Star Glitcher", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Star%20Glitcher"},
 }
 
--- Create buttons for each character
-for i, char in ipairs(characters) do
-    local button = Instance.new("TextButton", genesisPage)
-    button.Size = UDim2.new(1, -20, 0, 40)
-    button.Position = UDim2.new(0, 10, 0, (i - 1) * 45)  -- Stack buttons
-    button.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
-    button.Text = char[1]
-    button.TextColor3 = Color3.new(1, 1, 1)  -- White color
-    button.TextScaled = true
+local buttonHeight = 30
+local spacing = 5
 
+for i, char in ipairs(characters) do
+    local button = Instance.new("TextButton", genesisFrame)
+    button.Size = UDim2.new(1, 0, 0, buttonHeight)
+    button.Position = UDim2.new(0, 0, (buttonHeight + spacing) * (i - 1), 0)
+    button.Text = char[1]
+    button.TextColor3 = Color3.new(1, 1, 1)
+    button.BackgroundColor3 = Color3.new(0.4, 0.4, 0.4)
+
+    -- Button functionality to run character scripts
     button.MouseButton1Click:Connect(function()
-        loadstring(game:HttpGet(char[2]))()
+        loadstring(game:HttpGet(char[2]))()  -- Load and run the script for the selected character
     end)
 end
 
-createTab("Genesis FE")
+-- Show main tab on startup
+genesisFrame.Visible = false  -- Initially hide the Genesis FE tab
 
--- Toggle visibility with Left Ctrl
-local UserInputService = game:GetService("UserInputService")
-UserInputService.InputBegan:Connect(function(input)
+-- Tab switching functionality
+mainTabButton.MouseButton1Click:Connect(function()
+    contentFrame.Visible = true
+    genesisFrame.Visible = false
+end)
+
+genesisTabButton.MouseButton1Click:Connect(function()
+    contentFrame.Visible = false
+    genesisFrame.Visible = true
+end)
+
+-- Hide/Show GUI functionality with Ctrl
+local userInputService = game:GetService("UserInputService")
+
+userInputService.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.LeftControl then
-        mainFrame.Visible = not mainFrame.Visible
-    end
-end)
-
--- Make it draggable
-local dragging, dragInput, dragStart, startPos
-
-mainFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position
-        startPos = mainFrame.Position
-
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
-
-mainFrame.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement then
-        dragInput = input
-    end
-end)
-
-game:GetService("UserInputService").InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
-        local delta = input.Position - dragStart
-        mainFrame.Position = UDim2.new(
-            startPos.X.Scale, startPos.X.Offset + delta.X,
-            startPos.Y.Scale, startPos.Y.Offset + delta.Y
-        )
+        mainFrame.Visible = not mainFrame.Visible  -- Toggle visibility
     end
 end)
