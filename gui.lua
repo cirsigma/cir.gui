@@ -68,12 +68,10 @@ MinimizeButton.MouseButton1Click:Connect(function()
         -- Expand to original size
         MainFrame.Size = originalSize
         MinimizeButton.ImageTransparency = 1 -- Hide the image
-        MinimizeButton.Size = UDim2.new(0.1, 0, 0.1, 0)
     else
         -- Minimize to a small box with the image
         MainFrame.Size = UDim2.new(0.1, 0, 0.1, 0)
         MinimizeButton.ImageTransparency = 0 -- Show the image
-        MinimizeButton.Size = UDim2.new(1, 0, 1, 0)
     end
     isMinimized = not isMinimized
 end)
@@ -113,21 +111,22 @@ createButton("AK-47", 0.34, function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/AK-47"))()
 end)
 
--- Tab Switching Logic
-MainTab.MouseButton1Click:Connect(function()
-    PageTitle.Text = "cir.gui"
-    for _, v in ipairs(MainFrame:GetChildren()) do
-        if v:IsA("TextButton") and v.Text ~= "Main" and v.Text ~= "Genesis FE" then
-            v.Visible = true -- Show main buttons
-        end
-    end
-end)
-
+-- Show Genesis FE buttons on tab click
 GenesisTab.MouseButton1Click:Connect(function()
     PageTitle.Text = "Genesis FE"
     for _, v in ipairs(MainFrame:GetChildren()) do
         if v:IsA("TextButton") and v.Text ~= "Main" and v.Text ~= "Genesis FE" then
-            v.Visible = false -- Hide main buttons
+            v.Visible = true -- Show Genesis FE buttons
+        end
+    end
+end)
+
+-- Show Main Page
+MainTab.MouseButton1Click:Connect(function()
+    PageTitle.Text = "cir.gui"
+    for _, v in ipairs(MainFrame:GetChildren()) do
+        if v:IsA("TextButton") and v.Text ~= "Main" and v.Text ~= "Genesis FE" then
+            v.Visible = false -- Hide Genesis FE buttons
         end
     end
 end)
