@@ -6,7 +6,8 @@ local function createGui()
     mainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
     mainFrame.BackgroundColor3 = Color3.new(1, 1, 1)
     mainFrame.BackgroundTransparency = 0.5
-    mainFrame.Draggable = true
+    mainFrame.Active = true -- Make the frame active to allow dragging
+    mainFrame.Draggable = true -- Enable dragging
 
     -- Create title label for "Main"
     local titleLabel = Instance.new("TextLabel", mainFrame)
@@ -18,8 +19,8 @@ local function createGui()
 
     -- Create minimize button
     local minimizeButton = Instance.new("TextButton", mainFrame)
-    minimizeButton.Size = UDim2.new(0.2, 0, 0.1, 0)
-    minimizeButton.Position = UDim2.new(0, 0, 0.2, 0)
+    minimizeButton.Size = UDim2.new(0.1, 0, 0.1, 0)
+    minimizeButton.Position = UDim2.new(0.9, 0, 0, 0)
     minimizeButton.Text = "-"
     minimizeButton.BackgroundColor3 = Color3.new(1, 0, 0) -- Solid red
     minimizeButton.TextColor3 = Color3.new(1, 1, 1)
@@ -41,7 +42,7 @@ local function createGui()
 
     -- Genesis FE Tab GUI
     local genesisFrame = Instance.new("Frame", mainFrame)
-    genesisFrame.Size = UDim2.new(1, 0, 0.9, 0)
+    genesisFrame.Size = UDim2.new(1, 0, 0.8, 0)
     genesisFrame.Position = UDim2.new(0, 0, 0.3, 0)
     genesisFrame.BackgroundTransparency = 1 -- Invisible, just for layout
     genesisFrame.Visible = false -- Start hidden
@@ -70,8 +71,8 @@ local function createGui()
     local previousButton = nil
     for _, char in ipairs(characters) do
         local button = Instance.new("TextButton", genesisFrame)
-        button.Size = UDim2.new(1, 0, 0, 30)
-        button.Position = UDim2.new(0, 0, previousButton and (previousButton.Position.Y.Scale + 0.1) or 0, 0)
+        button.Size = UDim2.new(1, -20, 0, 30) -- Adjust size to fit within frame
+        button.Position = UDim2.new(0, 10, previousButton and (previousButton.Position.Y.Scale + 0.1) or 0, 0)
         button.Text = char[1]
         button.BackgroundColor3 = Color3.new(0, 0, 0)
         button.TextColor3 = Color3.new(1, 1, 1)
@@ -97,10 +98,17 @@ local function createGui()
             mainFrame.Size = UDim2.new(0, 50, 0, 50)
             mainFrame.Position = UDim2.new(0.5, -25, 0.5, -25)
             minimizeButton.Visible = false
+            titleLabel.Visible = false
+            mainTabButton.Visible = false
+            genesisTabButton.Visible = false
+            genesisFrame.Visible = false -- Hide Genesis frame when minimized
         else
             mainFrame.Size = UDim2.new(0, 400, 0, 300)
             mainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
             minimizeButton.Visible = true
+            titleLabel.Visible = true
+            mainTabButton.Visible = true
+            genesisTabButton.Visible = true
         end
     end)
 
