@@ -11,19 +11,20 @@ local PageTitle = Instance.new("TextLabel")
 ScreenGui.Parent = game:GetService("CoreGui")
 ScreenGui.ResetOnSpawn = false
 
--- Main Frame (Draggable + Semi-Transparent)
-MainFrame.BackgroundTransparency = 0.5
+-- Main Frame (Draggable, Semi-Transparent, Centered)
+MainFrame.BackgroundTransparency = 0.2
 MainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-MainFrame.Size = UDim2.new(0.3, 0, 0.5, 0)
-MainFrame.Position = UDim2.new(0.35, 0, 0.25, 0)
+MainFrame.Size = UDim2.new(0.3, 0, 0.4, 0)
+MainFrame.Position = UDim2.new(0.35, 0, 0.3, 0)
+MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
-MainFrame.Draggable = true
+MainFrame.Draggable = true -- Enable dragging
 MainFrame.Parent = ScreenGui
 
--- Minimize Button
+-- Minimize Button (Top-Right Corner)
 MinimizeButton.Size = UDim2.new(0.1, 0, 0.1, 0)
 MinimizeButton.Position = UDim2.new(0.9, -5, 0, 5)
-MinimizeButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+MinimizeButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 MinimizeButton.Text = "-"
 MinimizeButton.Parent = MainFrame
@@ -56,6 +57,7 @@ PageTitle.Position = UDim2.new(0.15, 0, 0, 0)
 PageTitle.TextColor3 = Color3.fromRGB(0, 0, 0)
 PageTitle.TextScaled = true
 PageTitle.BackgroundTransparency = 1
+PageTitle.Text = "cir.gui"
 PageTitle.Parent = MainFrame
 
 -- Minimized State Management
@@ -75,25 +77,6 @@ MinimizeButton.MouseButton1Click:Connect(function()
     isMinimized = not isMinimized
 end)
 
--- Page Switching Logic
-local function switchPage(pageName)
-    for _, button in pairs(MainFrame:GetChildren()) do
-        if button:IsA("TextButton") and button.Name ~= "MinimizeButton" then
-            button.Visible = (button.Name == pageName)
-        end
-    end
-end
-
-MainTab.MouseButton1Click:Connect(function()
-    PageTitle.Text = "cir.gui"
-    switchPage("Main")
-end)
-
-GenesisTab.MouseButton1Click:Connect(function()
-    PageTitle.Text = "Genesis FE"
-    switchPage("GenesisFE")
-end)
-
 -- Helper Function to Create Genesis FE Buttons
 local function createButton(name, pos, func)
     local button = Instance.new("TextButton")
@@ -103,8 +86,7 @@ local function createButton(name, pos, func)
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.Text = name
     button.Parent = MainFrame
-    button.Name = "GenesisFE"
-    button.Visible = false
+    button.Visible = false -- Default to hidden
 
     button.MouseButton1Click:Connect(func)
 end
@@ -130,21 +112,12 @@ createButton("AK-47", 0.34, function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/AK-47"))()
 end)
 
-createButton("Linked Sword", 0.4, function()
-    DisableFlingHealthBar = false
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Linked%20Sword"))()
+-- Tab Switching Logic
+MainTab.MouseButton1Click:Connect(function()
+    PageTitle.Text = "cir.gui"
 end)
 
-createButton("Neko", 0.46, function()
-    DisableFlingHealthBar = false
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Neko"))()
+GenesisTab.MouseButton1Click:Connect(function()
+    PageTitle.Text = "Genesis FE"
 end)
 
-createButton("Motorcycle", 0.52, function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Motorcycle"))()
-end)
-
-createButton("Star Glitcher", 0.58, function()
-    DisableFX = true
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Star%20Glitcher"))()
-end)
