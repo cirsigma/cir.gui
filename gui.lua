@@ -4,67 +4,64 @@ gui.ResetOnSpawn = false  -- Keeps the GUI open even after respawn
 
 -- Create the main frame
 local mainFrame = Instance.new("Frame", gui)
-mainFrame.Size = UDim2.new(0, 600, 0, 400)  -- Main frame size
-mainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)  -- Centered on screen
-mainFrame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)  -- Dark gray background
-mainFrame.BackgroundTransparency = 0.1  -- Slight transparency
+mainFrame.Size = UDim2.new(0, 580, 0, 460)
+mainFrame.Position = UDim2.new(0.5, -290, 0.5, -230)
+mainFrame.BackgroundColor3 = Color3.new(1, 1, 1)  -- White color
+mainFrame.BackgroundTransparency = 0.5  -- 50% transparent
+mainFrame.Active = true
+mainFrame.Draggable = true
 
--- Create the title label
+-- Title
 local titleLabel = Instance.new("TextLabel", mainFrame)
 titleLabel.Size = UDim2.new(1, 0, 0, 50)
 titleLabel.Position = UDim2.new(0, 0, 0, 0)
 titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "CIR.GUI - Press Ctrl to Hide/Show"
-titleLabel.TextColor3 = Color3.new(1, 1, 1)
+titleLabel.Text = "CIR.GUI\nPress Ctrl to hide/show GUI"
 titleLabel.TextScaled = true
-titleLabel.TextAlignment = Enum.TextAlignment.Center
+titleLabel.TextColor3 = Color3.new(0, 0, 0)  -- Black color
+titleLabel.TextAlign = Enum.TextXAlignment.Center
 
--- Create tabs frame
-local tabsFrame = Instance.new("Frame", mainFrame)
-tabsFrame.Size = UDim2.new(0, 120, 1, -50)  -- Width of the tabs
-tabsFrame.Position = UDim2.new(0, 0, 0, 50)
-tabsFrame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+-- Create tabs
+local tabContainer = Instance.new("Frame", mainFrame)
+tabContainer.Size = UDim2.new(0, 160, 1, -50)
+tabContainer.Position = UDim2.new(0, 0, 0, 50)
+tabContainer.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 
--- Function to create a button for each tab
-local function createTabButton(title, position, callback)
-    local button = Instance.new("TextButton", tabsFrame)
-    button.Size = UDim2.new(1, 0, 0, 40)
-    button.Position = position
+local pages = {}
+local function createTab(name)
+    local button = Instance.new("TextButton", tabContainer)
+    button.Size = UDim2.new(1, 0, 0, 50)
     button.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
-    button.Text = title
-    button.TextColor3 = Color3.new(1, 1, 1)
-    
-    button.MouseButton1Click:Connect(callback)
-    
+    button.Text = name
+    button.TextColor3 = Color3.new(1, 1, 1)  -- White color
+    button.TextScaled = true
+    button.MouseButton1Click:Connect(function()
+        for _, page in pairs(pages) do
+            page.Visible = false
+        end
+        pages[name].Visible = true
+    end)
     return button
 end
 
--- Create main and genesis buttons
-local mainTabButton = createTabButton("Main", UDim2.new(0, 0, 0, 0), function()
-    for _, v in pairs(mainFrame:GetChildren()) do
-        if v:IsA("Frame") and v.Name ~= "tabsFrame" then
-            v.Visible = false
-        end
-    end
-end)
+-- Create the main page
+local mainPage = Instance.new("Frame", mainFrame)
+mainPage.Size = UDim2.new(1, -160, 1, -50)
+mainPage.Position = UDim2.new(0, 160, 0, 50)
+mainPage.BackgroundColor3 = Color3.new(1, 1, 1)
+mainPage.Visible = true
+pages["Main"] = mainPage
 
-local genesisTabButton = createTabButton("Genesis FE", UDim2.new(0, 0, 0, 40), function()
-    for _, v in pairs(mainFrame:GetChildren()) do
-        if v:IsA("Frame") and v.Name ~= "tabsFrame" then
-            v.Visible = false
-        end
-    end
-    genesisFrame.Visible = true  -- Show Genesis frame
-end)
+createTab("Main")
 
--- Create the Genesis FE frame
-local genesisFrame = Instance.new("Frame", mainFrame)
-genesisFrame.Size = UDim2.new(1, -120, 1, -50)
-genesisFrame.Position = UDim2.new(0, 120, 0, 50)
-genesisFrame.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
-genesisFrame.Visible = false  -- Hide initially
+-- Create the Genesis FE tab
+local genesisPage = Instance.new("Frame", mainFrame)
+genesisPage.Size = UDim2.new(1, -160, 1, -50)
+genesisPage.Position = UDim2.new(0, 160, 0, 50)
+genesisPage.BackgroundColor3 = Color3.new(1, 1, 1)
+genesisPage.Visible = false
+pages["Genesis FE"] = genesisPage
 
--- Define the characters and their scripts
 local characters = {
     {"Goner", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Goner"},
     {"Sniper", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Sniper"},
@@ -85,41 +82,34 @@ local characters = {
     {"Star Glitcher", "https://raw.githubusercontent.com/GenesisFE/Genesis/main/Obfuscations/Star%20Glitcher"},
 }
 
--- Function to create character buttons
-local function createCharacterButton(name, url, position)
-    local charButton = Instance.new("TextButton", genesisFrame)
-    charButton.Size = UDim2.new(0.9, 0, 0, 40)
-    charButton.Position = position
-    charButton.BackgroundColor3 = Color3.new(0.4, 0.4, 0.4)
-    charButton.Text = name
-    charButton.TextColor3 = Color3.new(1, 1, 1)
+-- Create buttons for each character
+for i, char in ipairs(characters) do
+    local button = Instance.new("TextButton", genesisPage)
+    button.Size = UDim2.new(1, -20, 0, 40)
+    button.Position = UDim2.new(0, 10, 0, (i - 1) * 45)  -- Stack buttons
+    button.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+    button.Text = char[1]
+    button.TextColor3 = Color3.new(1, 1, 1)  -- White color
+    button.TextScaled = true
 
-    charButton.MouseButton1Click:Connect(function()
-        -- Load the script from the URL
-        local response = game:GetService("HttpService"):GetAsync(url)
-        loadstring(response)()  -- Execute the script
+    button.MouseButton1Click:Connect(function()
+        loadstring(game:HttpGet(char[2]))()
     end)
-    
-    return charButton
 end
 
--- Create buttons for all characters
-for i, character in ipairs(characters) do
-    createCharacterButton(character[1], character[2], UDim2.new(0, 0, 0, (i - 1) * 50))
-end
+createTab("Genesis FE")
 
--- Function to toggle GUI visibility
+-- Toggle visibility with Left Ctrl
 local UserInputService = game:GetService("UserInputService")
 UserInputService.InputBegan:Connect(function(input)
-    if input.KeyCode == Enum.KeyCode.LeftControl then
+    if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.LeftControl then
         mainFrame.Visible = not mainFrame.Visible
     end
 end)
 
--- Enable dragging functionality
+-- Make it draggable
 local dragging, dragInput, dragStart, startPos
 
--- Function to start dragging
 mainFrame.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
         dragging = true
@@ -134,14 +124,12 @@ mainFrame.InputBegan:Connect(function(input)
     end
 end)
 
--- Function to update position while dragging
 mainFrame.InputChanged:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseMovement then
         dragInput = input
     end
 end)
 
--- Update the main frame's position as the player drags it
 game:GetService("UserInputService").InputChanged:Connect(function(input)
     if input == dragInput and dragging then
         local delta = input.Position - dragStart
