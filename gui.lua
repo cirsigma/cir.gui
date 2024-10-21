@@ -2,7 +2,7 @@
 local ScreenGui = Instance.new("ScreenGui")
 local MainFrame = Instance.new("Frame")
 local TabFrame = Instance.new("Frame")
-local MinimizeButton = Instance.new("TextButton")
+local MinimizeButton = Instance.new("ImageButton")
 local MainTab = Instance.new("TextButton")
 local GenesisTab = Instance.new("TextButton")
 local PageTitle = Instance.new("TextLabel")
@@ -21,12 +21,11 @@ MainFrame.Active = true
 MainFrame.Draggable = true -- Enable dragging
 MainFrame.Parent = ScreenGui
 
--- Minimize Button (Top-Right Corner)
+-- Minimize Button (Left Side)
 MinimizeButton.Size = UDim2.new(0.1, 0, 0.1, 0)
-MinimizeButton.Position = UDim2.new(0.9, -5, 0, 5)
-MinimizeButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-MinimizeButton.Text = "-"
+MinimizeButton.Position = UDim2.new(0, 5, 0, 5)
+MinimizeButton.BackgroundTransparency = 1 -- Make it transparent
+MinimizeButton.Image = "https://i5.walmartimages.com/seo/Fresh-Gala-Apple-Each_f46d4fa7-6108-4450-a610-cc95a1ca28c5_3.38c2c5b2f003a0aafa618f3b4dc3cbbd.jpeg"
 MinimizeButton.Parent = MainFrame
 
 -- Tab Frame (Right-Side Tabs)
@@ -68,11 +67,13 @@ MinimizeButton.MouseButton1Click:Connect(function()
     if isMinimized then
         -- Expand to original size
         MainFrame.Size = originalSize
-        MinimizeButton.Text = "-"
+        MinimizeButton.ImageTransparency = 1 -- Hide the image
+        MinimizeButton.Size = UDim2.new(0.1, 0, 0.1, 0)
     else
-        -- Minimize to a small box
+        -- Minimize to a small box with the image
         MainFrame.Size = UDim2.new(0.1, 0, 0.1, 0)
-        MinimizeButton.Text = "+"
+        MinimizeButton.ImageTransparency = 0 -- Show the image
+        MinimizeButton.Size = UDim2.new(1, 0, 1, 0)
     end
     isMinimized = not isMinimized
 end)
@@ -115,9 +116,18 @@ end)
 -- Tab Switching Logic
 MainTab.MouseButton1Click:Connect(function()
     PageTitle.Text = "cir.gui"
+    for _, v in ipairs(MainFrame:GetChildren()) do
+        if v:IsA("TextButton") and v.Text ~= "Main" and v.Text ~= "Genesis FE" then
+            v.Visible = true -- Show main buttons
+        end
+    end
 end)
 
 GenesisTab.MouseButton1Click:Connect(function()
     PageTitle.Text = "Genesis FE"
+    for _, v in ipairs(MainFrame:GetChildren()) do
+        if v:IsA("TextButton") and v.Text ~= "Main" and v.Text ~= "Genesis FE" then
+            v.Visible = false -- Hide main buttons
+        end
+    end
 end)
-
